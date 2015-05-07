@@ -10,8 +10,8 @@ void printFloat(double f, int digits = 2);
 
 void setup() {
   // put your setup code here, to run once:
-  //Serial.begin(115200); //Just run it at 9600 baud
-  s.begin(9600);
+  //Serial.begin(115200); breaks 
+  s.begin(9600);//Just run it at 9600 baud
 }
 
 void loop() {
