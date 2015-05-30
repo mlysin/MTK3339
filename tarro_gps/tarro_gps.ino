@@ -89,7 +89,7 @@ void setup()
   // loop code a heck of a lot easier!
   useInterrupt(true);
  
-  delay(1000);
+  delay(2000);
 }
 
 // Interrupt is called once a millisecond, looks for any new GPS data, and stores it
@@ -165,25 +165,25 @@ void loop()                     // run over and over again
     Serial.print(GPS.month, DEC); 
     Serial.print("/20");
     Serial.println(GPS.year, DEC);
-    Serial.print("Fix: "); 
+    Serial.print("Fix:  "); 
     Serial.print((int)GPS.fix);
-    Serial.print(" quality: "); 
+    Serial.print(" Quality: "); 
     Serial.println((int)GPS.fixquality); 
     if (GPS.fix) {
-      Serial.print("Location: ");
+      Serial.print("Location:      ");
       Serial.print(GPS.latitude, 4); 
       Serial.print(GPS.lat);
       Serial.print(", "); 
       Serial.print(GPS.longitude, 4); 
       Serial.println(GPS.lon);
 
-      Serial.print("Speed (MPH): "); 
+      Serial.print("Speed (MPH):   "); 
       Serial.println(GPS.speed);
-      Serial.print("Angle: "); 
+      Serial.print("Angle:         "); 
       Serial.println(GPS.angle);
       Serial.print("Altitude (Ft): "); 
       Serial.println(GPS.altitude);
-      Serial.print("Satellites: "); 
+      Serial.print("Satellites:    "); 
       Serial.println((int)GPS.satellites);
     }  
   }
