@@ -1,11 +1,19 @@
 // TARRo GPS + IMU for Mega 2560
 // See TARRo_gps.ino for explanation on NMEA parsing and hardware (not softserial) setup
-// No actual IMU code yet
 
 #include <Adafruit_GPS.h>
 #include <SoftwareSerial.h>
+#include <Servo.h> 
+
+Servo myservo;  // create servo object to control a servo
 HardwareSerial mySerial = Serial1;
 Adafruit_GPS GPS(&Serial1);
+
+int pos = 0;    // variable to store the servo position 
+int jump = 60;  // variable of step angle 
+int wait = 1500;  // variable of wait time between steps
+int min = 0;  // minimum servo angle
+int max = 180; // maximum servo angle
 
 // 'false' to turn off echoing the GPS data to the Serial console
 //'true' if you want to debug and listen to the raw GPS sentences
@@ -14,10 +22,12 @@ boolean usingInterrupt = false;
 void useInterrupt(boolean);
 
 void setup() {
+  myservo.attach(9);  // attach the servo to pin 9 to the servo object 
+  
   Serial.begin(115200);
   Serial.println("Adafruit GPS library basic test!");
   GPS.begin(9600); // 9600 NMEA is the default baud rate for MTK
-  //***GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA); //MC (recommended minimum) and GGA (fix data) including altitude
+  GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA); //MC (recommended minimum) and GGA (fix data) including altitude
   //GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCONLY); // "minimum recommended" data for high update rates
   //GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_ALLDATA); // all the available data - for 9600 baud you'll want 1 Hz rate
   GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
@@ -27,7 +37,7 @@ void setup() {
   //GPS.sendCommand(PMTK_SET_NMEA_UPDATE_10HZ);
   //GPS.sendCommand(PGCMD_ANTENNA); // Request updates on antenna status, comment out to keep quiet
   useInterrupt(true); 
-  delay(2000);
+  delay(1000);
 }
 
 // Interrupt is called once a millisecond, looks for any new GPS data, and stores it
@@ -54,9 +64,28 @@ void useInterrupt(boolean v) {
 }
 
 uint32_t timer = millis();
+
+
+void servoloop(){
+  
+  for(pos = min; pos <= max; pos += (jump)) // goes from 0 degrees to 180 degrees 
+  {                                  // in steps of 1 degree 
+    myservo.write(pos);              // tell servo to go to position in variable 'pos' 
+    delay(wait);                       // waits 15ms for the servo to reach the position 
+  } 
+  for(pos = max; pos>=min; pos-=(jump))     // goes from 180 degrees to 0 degrees 
+  {                                
+    myservo.write(pos);              // tell servo to go to position in variable 'pos' 
+    delay(wait);                       // waits 15ms for the servo to reach the position 
+  }
+} 
+
+
 void loop() {// do nothing! all reading and printing is done in the interrupt
   // in case you are not using the interrupt above, you'll
   // need to 'hand query' the GPS, not suggested :(
+  
+  servoloop();
   if (! usingInterrupt) {
     // read data from the GPS in the 'main loop'
     char c = GPS.read();
@@ -78,7 +107,7 @@ void loop() {// do nothing! all reading and printing is done in the interrupt
 
   if (millis() - timer > 1000) { // approximately every 2 seconds or so, print out the current stats
     timer = millis(); // reset the timer
-    Serial.print("\nTime: ");
+    Serial.print("\n\nTime: ");
     Serial.print(GPS.hour, DEC); // would be nice to convert to PST
     Serial.print(':');
     Serial.print(GPS.minute, DEC); 
