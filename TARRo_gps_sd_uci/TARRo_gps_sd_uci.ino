@@ -1,9 +1,3 @@
-// UCI TEST DAY
-// no rpi
-// yes sd card write support
-// still buggy
-
-
 #include <SoftwareSerial.h>
 #include <Adafruit_GPS.h>
 #include <SD.h>
@@ -97,53 +91,63 @@ void loop() {
   
   if(millis() - timer > 1000)
   {
-    Serial.print("Location:      ");
+    Serial.println("\n---------------------------");
+    Serial.print("\nLocation:      ");
     Serial.print(GPS.latitude, 4); 
     Serial.print(GPS.lat);
     Serial.print(", "); 
     Serial.print(GPS.longitude, 4); 
-    Serial.println(GPS.lon);
-
-    Serial.print("Satellites:    "); 
-    Serial.println((int)GPS.satellites);
+    Serial.print(GPS.lon);
+    Serial.print("\nFix:           "); 
+    Serial.print((int)GPS.fix);
+    Serial.print("\nQuality:       "); 
+    Serial.print((int)GPS.fixquality);
+    Serial.print("\nSatellites:    "); 
+    Serial.print((int)GPS.satellites);
+    
     if(GPS.fix) {
-        digitalWrite(led_red, HIGH);
-        delay(250);
-        digitalWrite(led_red, LOW);
-        
-        
-        myFile = SD.open("data.txt", FILE_WRITE);
-        if (myFile) {
+      
+      myFile = SD.open("data.txt", FILE_WRITE);
+      
+      if (myFile) {
           
-          myFile.print("\nTime: ");
-          myFile.print(GPS.hour, DEC); 
-          myFile.print(':');
-          myFile.print(GPS.minute, DEC); 
-          myFile.print(':');
-          myFile.print(GPS.seconds, DEC); 
-          myFile.print('.');
-          myFile.println(GPS.milliseconds);
-          myFile.print("Date: ");
-          myFile.print(GPS.day, DEC); 
-          myFile.print('/');
-          myFile.print(GPS.month, DEC); 
-          myFile.print("/20");
-          myFile.println(GPS.year, DEC);
-          
-          myFile.println("Location: ");
-          myFile.print(GPS.latitude, 4);
-          myFile.print(GPS.lat);
-          myFile.print(", ");
-          myFile.print(GPS.longitude, 4);
-          myFile.println(GPS.lon);
-          myFile.close();
-          Serial.println("done.");
-        }
+        myFile.print("\nDate:     ");
+        myFile.print(GPS.day, DEC); 
+        myFile.print('/');
+        myFile.print(GPS.month, DEC); 
+        myFile.print("/20");
+        myFile.println(GPS.year, DEC);
+        myFile.print("UTC Time: ");
+        myFile.print(GPS.hour, DEC); 
+        myFile.print(':');
+        myFile.print(GPS.minute, DEC); 
+        myFile.print(':');
+        myFile.print(GPS.seconds, DEC); 
+        myFile.print('.');
+        myFile.println(GPS.milliseconds);  
+        myFile.println("Location: ");
+        myFile.print(GPS.latitude, 4);
+        myFile.print(GPS.lat);
+        myFile.print(", ");
+        myFile.print(GPS.longitude, 4);
+        myFile.println(GPS.lon);
+        myFile.close();
         
+        Serial.print("\nData stored in SD card under ");
+        Serial.print(GPS.hour, DEC);
+        Serial.print(":");
+        Serial.print(GPS.minute, DEC); 
+        Serial.print(':');
+        Serial.print(GPS.seconds, DEC); 
+        Serial.print('.');
+        Serial.println(GPS.milliseconds);
+        Serial.println("\nEnd 8 second iteration. \n\n");
+
+        delay(7000); // 3000 = about 4 seconds
+      }  
     }
     
-    
-    
+     
     timer = millis();
     if(digitalRead(2) == HIGH) {
       Serial.print("Actually getting HIGH");
@@ -173,7 +177,7 @@ void loop() {
           myFile.print(GPS.month, DEC); 
           myFile.print("/20");
           myFile.println(GPS.year, DEC);
-          
+
           myFile.println("Location: ");
           myFile.print(GPS.latitude, 4);
           myFile.print(GPS.lat);
