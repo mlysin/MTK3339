@@ -12,9 +12,8 @@ Adafruit_GPS GPS(&Serial1);
 bool usingInterrupt = false;
 void useInterrupt(bool);
 
-int led_red    = 13;
-int led_yellow = 12;
-int led_green  = 11;
+// no lights
+//int led_red    = 13;
 
 void setup() {
   Serial.begin(115200);
@@ -149,16 +148,10 @@ void loop() {
     
      
     timer = millis();
-    if(digitalRead(2) == HIGH) {
+    if(digitalRead(2) == HIGH) { // but we decided to abandon rpi/ard combo on test day
       Serial.print("Actually getting HIGH");
-      digitalWrite(led_green, HIGH);
-      delay(250);
-      digitalWrite(led_green, LOW);
       
       if(GPS.fix) {
-        digitalWrite(led_red, HIGH);
-        delay(250);
-        digitalWrite(led_red, LOW);
         
         myFile = SD.open("data.txt", FILE_WRITE);
         if (myFile) {
