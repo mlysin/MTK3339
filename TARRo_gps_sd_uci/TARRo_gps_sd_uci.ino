@@ -17,13 +17,13 @@ void useInterrupt(bool);
 
 void setup() {
   Serial.begin(115200);
-  pinMode(led_red, OUTPUT);
-  pinMode(led_yellow, OUTPUT);
-  pinMode(led_green, OUTPUT);
+  //pinMode(led_red, OUTPUT);
+  //pinMode(led_yellow, OUTPUT);
+  //pinMode(led_green, OUTPUT);
   
-  digitalWrite(led_yellow, HIGH);
-  delay(250);
-  digitalWrite(led_yellow, LOW);
+  //digitalWrite(led_yellow, HIGH);
+  //delay(250);
+  //digitalWrite(led_yellow, LOW);
   
   Serial.println("Adafruit GPS library basic test!\n\n");
   
